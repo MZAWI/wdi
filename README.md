@@ -1,0 +1,2 @@
+# wdi
+Wstęp do informatyki
