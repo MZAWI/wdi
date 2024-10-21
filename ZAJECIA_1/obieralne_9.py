@@ -1,7 +1,7 @@
-#Funkcja znajdująca dzielniki liczby
+# Funkcja znajdująca dzielniki liczby
 def div_sum(number):
-    div = [1] 
-    mid = int(number**(1/2)) + 1
+    div = [1]
+    mid = int(number ** (1 / 2)) + 1
     for n1 in range(2, mid):
         if number % n1 == 0:
             div.append(n1)
@@ -10,13 +10,11 @@ def div_sum(number):
                 div.append(n2)
     return sum(div)
 
-
-seek = 10**6 # liczba do której szukamy zaprzyjaźnionych
+seek = 10**6  # liczba do której szukamy zaprzyjaźnionych
 
 div_sums = []
 for i in range(seek):
     div_sums.append(div_sum(i))
-
 
 result = []
 for n1 in range(seek):
