@@ -1,5 +1,6 @@
 import csv
 import math
+import itertools
 
 # Reads list of points from csv file
 def create_point_list(csv_file):
@@ -10,6 +11,7 @@ def create_point_list(csv_file):
         for row in csv_reader: # create point list
             x, y = row
             output_points.append((float(x), float(y)))
+    output_points = list(set(output_points)) #redukcja nadmiarowych punktów
     return output_points
 
 # Find a cosine of an angle formed by 3 points
@@ -21,16 +23,15 @@ def cos_formula(point1, point2, point3):
     return ((b**2) + (c**2) - (a**2))/(2*b*c)
 
 # Check if points from given list form a regular polygon
-def is_regular_polygon(csv_points_file, a: float):
-    points = create_point_list(csv_points_file)
-    print(points)
+def is_regular_polygon(points, a: float):
+    # print(points)
     closest_points = {}
     # Create a dictionary with one point as value and 
     # two other points with distance a to the point as value
     for point1 in points: 
         value = []
         for point2 in points:
-            if math.dist(point1,point2) == a:
+            if round(math.dist(point1,point2),4) == a:
                 value.append(point2)
         # Return false if there are not exactly 2 points 
         # with distance a to the point
@@ -48,9 +49,22 @@ def is_regular_polygon(csv_points_file, a: float):
         return True
     else:
         return False
-
+    
+def any_regular_polygons(csv_points_file, a):
+    points = create_point_list(csv_points_file)
+    combo = []
+    for i in range(3, len(points)+1):
+        combo = itertools.combinations(points, i)
+        for figure in combo:
+            # print(figure)
+            if is_regular_polygon(figure, a):
+                return True
+    return False
+        
 def main():
-    print(is_regular_polygon("figura.csv", 1))
+    # points = create_point_list("figura.csv")
+    # print(is_regular_polygon(points, 1))
+    print(any_regular_polygons("figura.csv", 1))
 
 if __name__ == "__main__":
     main()
