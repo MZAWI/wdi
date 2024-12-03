@@ -2,18 +2,6 @@ import csv
 import math
 import itertools
 
-# Reads list of points from csv file
-def create_point_list(csv_file):
-    output_points = []
-    with open(csv_file, 'r') as file:
-        csv_reader = csv.reader(file)
-        next(csv_reader)    # skip header
-        for row in csv_reader: # create point list
-            x, y = row
-            output_points.append((float(x), float(y)))
-    output_points = list(set(output_points)) #redukcja nadmiarowych punktów
-    return output_points
-
 # Find a cosine of an angle formed by 3 points
 # Point 1 is the middle one
 def cos_formula(point1, point2, point3):
@@ -50,8 +38,7 @@ def is_regular_polygon(points, a: float):
     else:
         return False
     
-def any_regular_polygons(csv_points_file, a):
-    points = create_point_list(csv_points_file)
+def any_regular_polygons(points, a):
     combo = []
     for i in range(3, len(points)+1):
         combo = itertools.combinations(points, i)
@@ -62,9 +49,9 @@ def any_regular_polygons(csv_points_file, a):
     return False
         
 def main():
-    # points = create_point_list("figura.csv")
-    # print(is_regular_polygon(points, 1))
-    print(any_regular_polygons("figura.csv", 1))
+    figura = [(0,0),(0,1),(1,0),(0,12),(1,1)]
+    # figura - 
+    print(any_regular_polygons(figura, 1))
 
 if __name__ == "__main__":
     main()
