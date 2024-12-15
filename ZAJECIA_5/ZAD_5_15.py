@@ -1,7 +1,7 @@
 # Class implementation - Remake
 # Point format on x,y axis: (x,y)
 
-import math
+from math import sqrt
 
 class Point:
     def __init__(self, coords):
@@ -14,40 +14,39 @@ class Point:
     def get_coordinates(self):
         return (self.x, self.y)
 
-    # Calculate distance between two points
-    def distance(self, other_point):
+    def distance(self, other_point): # Calculate distance between two points
         dx = self.x - other_point.x
         dy = self.y - other_point.y
-        return round(math.sqrt(dx**2 + dy**2),6)
-
-    # Check if two points are the same
-    def isEqual(self, other_point):
-        if self.x == other_point.x and self.y == other_point.y:
-            return True
+        return sqrt(dx**2 + dy**2)
+    
+    def __eq__(self, other_point): # Define equality
+        if isinstance(other_point, Point):
+            return (self.x == other_point.x and self.y == other_point.y)
         return False
 
-# Return list of the closest points of the same distance to the given point
-def closest_points(base: Point, points: list):
-    # Remove base from points list if present
-    points = [point for point in points if not base.isEqual(point)]
-
-    # Prepare list of distances between point1 and other points
-    distances = [(point, base.distance(point)) for point in points]
-    # Find the minimum distance 
-    min_distance = min(distances, key = lambda x: x[1])
-    closest = []
-    for distance in distances:
-        if distance[1] == min_distance[1]:
-            closest.append(min_distance[0])
-    return(closest)
+    # Return list of closest points of the same distance
+    # Excluding comparision point
+    def closest(self, point_list: list):
+        point_list = [point for point in point_list if point != self] # Remove self
+        distances = [(point, self.distance(point)) for point in point_list]
+        min_distance = min(distances, key = lambda x: x[1])[1]
+        closest = [point for point, dist in distances if dist == min_distance]
+        return closest
+    
+    # Check if points from a list can draw equilateral rectangle
+def is_equilateral_rectangle(point_list: list):
+    if not all(isinstance(point, Point) for point in point_list):
+        return False
+    if all([len(point.closest(point_list)) == 2 for point in point_list]):
+        return True
+    return False
 
 def main():
-    point_list = [(0,0),(1,1),(2,2),(1,0)]
-    for i in range(len(point_list)):
-        point_list[i] = Point(point_list[i])
-    print(point_list)
+    point_list = [(0,0),(1,1),(1,0),(0,1)]
+    point_list = [Point(point) for point in point_list]
 
-    print(closest_points(Point((0,0)),point_list))
+
+    print(is_equilateral_rectangle(point_list))
 
 if __name__ == "__main__":
     main()
