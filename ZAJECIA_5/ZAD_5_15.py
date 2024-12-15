@@ -24,7 +24,7 @@ class Point:
         if isinstance(other_point, Point):
             return (self.x == other_point.x and self.y == other_point.y)
         return False
-
+    
     # Return list of closest points of the same distance
     # Excluding comparision point
     def closest(self, point_list: list, tolerance = 1e-9):
@@ -43,10 +43,6 @@ class Point:
         cos_angle = dot_product / (u_magnitude * v_magnitude)
         return math.acos(cos_angle)
     
-    # Check if point is inside of a polygon (Ray-casting algorithm)
-    def is_inside_of_polygon(self, point_list: list):
-        pass
-
 # Check if points from a list can draw equilateral polygon
 def is_equilateral_polygon(point_list: list):
     if not all(isinstance(point, Point) for point in point_list) or len(point_list) < 3:
@@ -67,28 +63,69 @@ def same_angles(point_list: list):
     return False
 
 def is_Regular_Polygon(point_list):
-    point_list = [Point(point) for point in point_list]
     if is_equilateral_polygon(point_list) and same_angles(point_list):
+        print(organize_polygon(point_list))
         return True
     return False
 
-
 def find_regular_polygon(point_list):
     combo = []
+    polygons = []
     for i in range(3, len(point_list)+1):
         combo = itertools.combinations(point_list, i)
         for figure in combo:
             # print(figure)
             if is_Regular_Polygon(figure):
-                return figure
+                polygons.append(figure)
+    return polygons
+
+def find_centroid(point_list: list):
+    centroid_x = sum(point.x for point in point_list)/len(point_list)
+    centroid_y = sum(point.y for point in point_list)/len(point_list)
+    return Point((centroid_x,centroid_y))
+
+def organize_polygon(point_list: list):
+    centroid = find_centroid(point_list)
+
+    def centroid_angle(point):
+        return math.atan2(point.y - centroid.y, point.x - centroid.x)
+    return list(sorted(point_list, key=centroid_angle))
+
+def is_inside_polygon(polygon, point): # Ray casting algorithm
+    if point in polygon:
+        return False
+    polygon = organize_polygon(polygon)
+    n = len(polygon)
+    if n < 3:
+        raise ValueError("There must be at least 3 points")
+    count = 0
+    for i in range(n):
+        current = polygon[i]
+        next_point = polygon[(i+1)%n]
+        if (current.y > point.y) != (next_point.y > point.y):
+            if current.y == next_point.y:
+                continue
+            x_intersection = (next_point.x - current.x) * (point.y - current.y) / (next_point.y - current.y) + current.x
+            if point.x < x_intersection:
+                count += 1
+    return count % 2 == 1
+
+def forms_regular_polygon_with_free_inside(point_list):
+    polygons = find_regular_polygon(point_list)
+    for polygon in polygons:
+        for point in point_list:
+            if is_inside_polygon(polygon, point):
+                return False
+    return True
+
+
 
 def main():
     a = math.sqrt(3)/2
-    # point_list = [(0,0),(1,0),(0,1),(1,1)]
-    point_list = [(0,0),(1,0),(0.5,a)]
-    print(is_Regular_Polygon(point_list))
-    print(find_regular_polygon(point_list))
-    Point((0.5,0.2)).is_inside_of_polygon(point_list)
+    point_list = [(0,0),(1,1),(0,1),(1,0),(,0.5)]
+    point_list = [Point(point) for point in point_list]
+
+    print(forms_regular_polygon_with_free_inside(point_list))
 
 if __name__ == "__main__":
     main()
