@@ -118,12 +118,14 @@ def forms_regular_polygon_with_free_inside(point_list):
                 return False
     return True
 
+def convert_list(point_list):
+    return [Point(point) for point in point_list]
+
 def main():
     a = math.sqrt(3)/2
     point_list = [(0,0),(1,1),(0,1),(1,0),(-0.5,0.5)]
-    point_list = [Point(point) for point in point_list]
 
-    print(forms_regular_polygon_with_free_inside(point_list))
+    print(forms_regular_polygon_with_free_inside(convert_list(point_list)))
 
 if __name__ == "__main__":
     main()
