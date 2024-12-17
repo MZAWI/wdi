@@ -127,5 +127,6 @@ def main():
 
     print(forms_regular_polygon_with_free_inside(convert_list(point_list)))
 
+
 if __name__ == "__main__":
     main()
