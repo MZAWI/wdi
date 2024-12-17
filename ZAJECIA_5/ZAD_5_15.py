@@ -11,6 +11,9 @@ class Point:
 
     def __repr__(self):
         return f"({self.x},{self.y})"
+    
+    def get_coordinates(self):
+        return (self.x, self.y)
 
     def distance(self, other_point): # Calculate distance between two points
         dx = self.x - other_point.x
@@ -109,8 +112,6 @@ def is_inside_polygon(polygon, point): # Ray casting algorithm
 
 def forms_regular_polygon_with_free_inside(point_list):
     polygons = find_regular_polygon(point_list)
-    if not polygons:
-        return False
     for polygon in polygons:
         for point in point_list:
             if is_inside_polygon(polygon, point):
@@ -122,7 +123,7 @@ def convert_list(point_list):
 
 def main():
     a = math.sqrt(3)/2
-    point_list = [(0,0), (1,0), (0.5,a),(0.5,0.1)]
+    point_list = [(0,0),(1,1),(0,1),(1,0),(-0.5,0.5)]
 
     print(forms_regular_polygon_with_free_inside(convert_list(point_list)))
 
